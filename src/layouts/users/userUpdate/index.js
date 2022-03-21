@@ -5,7 +5,6 @@ import { useParams, useNavigate } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 
@@ -65,7 +64,7 @@ function UserUpdate() {
 
   const id = useParams();
 
-  const submitUser= () => {
+  const updateUser = () => {
     api
       .put(`/users/${id}`, userFields.state)
       .then((response) => setUser(response.data))
@@ -146,7 +145,7 @@ function UserUpdate() {
             <MDTypography variant="h6" fontWeight="medium">
               Atualização
             </MDTypography>
-            <MDButton variant="gradient" color="info" onClick={submitUser}>
+            <MDButton variant="gradient" color="info" onClick={updateUser}>
               Atualizar
             </MDButton>
           </Grid>

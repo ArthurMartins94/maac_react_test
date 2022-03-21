@@ -1,86 +1,100 @@
+// react dom
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
+import MDButton from "components/MDButton";
 
-export default function data() {
-  const Author = ({ name }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDBox ml={2} lineHeight={1}>
-        <MDTypography display="block" variant="button" fontWeight="medium">
-          {name}
-        </MDTypography>
-      </MDBox>
-    </MDBox>
-  );
+// Axius api
+import api from "../../../services/api";
 
-  const Job = ({ title}) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
-      </MDTypography>
-    </MDBox>
-  );
+const field = {
+  name: undefined,
+  accounts: undefined,
+  editUser: undefined,
+  delUser: undefined,
+}
+
+export default function Data() {
+  const navigate = useNavigate();
+
+  const [setUsersList] = useState();
+
+  const reloadPage = () => {
+    let path = `/users`;
+    navigate(path);
+  };
+
+  const editUserPage = (id) => {
+    let path = `/users/${id}`;
+    navigate(path);
+  };
+
+  const deleteUser = (id) => {
+    api
+      .delete(`/users/${id}`)
+      .then((response) => setUsersList(response.data))
+      .catch((err) => {
+        console.log("Erro: " + err);
+      });
+    reloadPage();
+  };
+
+  const loadAcc = (id) => {
+    field.accounts = api
+      .get(`/users/${id}/bank_accounts`)
+      .then((response) => setUsersList(response.data))
+      .catch((err) => {
+        console.log("Erro: " + err);
+      });
+  };
+
+  const loadUsers = () => {
+    const usersList = [];
+    usersList = api.get("/users")
+      .then((response) => setUsersList(response.data))
+      .catch((err) => {
+        console.log("Erro: " + err);
+      });
+    usersList.map(res => {
+      res.field.accounts = loadAcc(res.id);
+      res.field.editUser = res.id;
+      res.field.delUser = res.id;
+      return res;
+    })
+  };
+
+  //loadUsers();
 
   return {
     columns: [
-      { Header: "nome", accessor: "author", width: "40%", align: "left" },
-      { Header: "contas", accessor: "function", width: "40%", align: "center" },
-      { Header: "ação", accessor: "action", align: "center" },
+      { Header: "nome", accessor: "name", width: "40%", align: "left" },
+      { Header: "contas", accessor: "accounts", width: "40%", align: "center" },
+      { Header: "edição", accessor: "edit", align: "center" },
+      { Header: "deletar", accessor: "del", align: "center" },
     ],
 
     rows: [
       {
-        author: <Author name="John Michael" />,
-        function: <Job title="Manager"/>,
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
+        name: field.name,
+        accounts: field.accounts,
+        edit: (
+          <MDButton 
+            variant="gradient"
+            color="info"
+            //onClick={editUserPage(field.editUser)}
+          >
+            Editar
+          </MDButton>
         ),
-      },
-      {
-        author: <Author name="John Michael" />,
-        function: <Job title="Manager"/>,
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author name="John Michael" />,
-        function: <Job title="Manager"/>,
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author name="John Michael" />,
-        function: <Job title="Manager"/>,
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author name="John Michael" />,
-        function: <Job title="Manager"/>,
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author name="John Michael" />,
-        function: <Job title="Manager"/>,
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
+        del: (
+          <MDButton
+            variant="gradient"
+            color="info"
+            //onClick={deleteUser(field.delUser)}
+          >
+            Deletar
+          </MDButton>
         ),
       },
     ],

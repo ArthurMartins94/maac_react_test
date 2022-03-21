@@ -2,6 +2,7 @@
 import Users from "layouts/users";
 import UserCreate from "layouts/users/userCreate";
 import UserUpdate from "layouts/users/userUpdate";
+import BankAccUpdate from "layouts/users/bankAccUpdate";
 
 // ícones
 import Icon from "@mui/material/Icon";
@@ -24,6 +25,11 @@ const routes = [
     key: "userUpdate",
     route: "/users/userUpdate",
     component: <UserUpdate/>,
+  },
+  {
+    key: "bankAccUpdate",
+    route: "/users/bankAccUpdate",
+    component: <BankAccUpdate/>,
   },
 ];
 
